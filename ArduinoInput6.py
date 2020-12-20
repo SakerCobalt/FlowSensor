@@ -5,6 +5,7 @@
 #Version 4 incorporates MQTT messaging, database function moved to server
 #Version 5 incorporates Process restart
 #Version 6 changes over to UART connection through pins 8 and 10
+#Version 6+ controlled via git
 
 import serial
 import string
@@ -116,7 +117,7 @@ def runFlowSensorPi():
     while True:
         if ser.in_waiting>0:
             try:
-                print("serial data >0")
+                #print("serial data >0")
                 arduinoData = getArduinoData()
                 flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min.
                 pumpCurrent = float(arduinoData[6]) #Pump Current
@@ -148,7 +149,9 @@ def runFlowSensorPi():
                 waterVolumeCum = msgWaterVolume(pulseCount2,waterVolumeCum)
                 ser.flushInput()
             time.sleep(1)
-        
+        else:
+            print("Serial = 0")
+            time.sleep(1)
 def restartProgram():
     #Restarts program with file objects and cleanup
     try:
