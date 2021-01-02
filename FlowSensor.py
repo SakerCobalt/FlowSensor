@@ -81,12 +81,12 @@ def runFlowSensorPi():
     while True:
         if ser.in_waiting>0:
             try:
-                print("serial data >0")
+                #print("serial data >0")
                 arduinoData = getArduinoData()
             except:
                 runFlowSensorPi()
                 traceback.print_exc()
-            print(len(arduinoData))
+            #print(len(arduinoData))
             if len(arduinoData)==9:
                 flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
             
