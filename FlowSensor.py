@@ -43,7 +43,6 @@ def initiateSerial():
         global ser
         print("Connecting")
         ser = serial.Serial('/dev/ttyS0', 2400, 8, 'N',1,timeout=1)
-        ser.flushInput()
     except:
         #To try to reconnect if the first connection fails
         traceback.print_exc()
@@ -128,16 +127,8 @@ def runFlowSensorPi():
         else:
             print("Serial = 0")
             time.sleep(1)
+            initiateSerial()
             
-def restartProgram():
-    #Restarts program with file objects and cleanup
-    try:
-        os.execl(sys.python3, os.path.abspath(ArduinoInput4.py))
-    except:
-        print("Failed to Restart")
-        time.sleep(10)
-        restartProgram()
-
 try:
     initiateSerial()
     runFlowSensorPi()
