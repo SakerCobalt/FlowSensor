@@ -97,13 +97,14 @@ def runFlowSensorPi():
             try:
                 #print("serial data >0")
                 arduinoData = getArduinoData()
-                if len(arduinoData)<7:
-                    runFlowSensorPi()
-                    print("rerun FlowSensorPi, array too short")
             except:
                 runFlowSensorPi()
                 traceback.print_exc()
                 
+            if len(arduinoData)<7:
+                    runFlowSensorPi()
+                    print("rerun FlowSensorPi, array too short")
+                    
             flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
             
             kWPump = round((float(arduinoData[6])),2) #Pump Current
@@ -154,4 +155,6 @@ except IndexError:
 except OSError:
     traceback.print_exc()
     time.sleep(5)
-    #restartProgram()   
+    #restartProgram()
+except:
+    runFlowSensorPi()
