@@ -87,7 +87,7 @@ def runFlowSensorPi():
                 runFlowSensorPi()
                 traceback.print_exc()
                 
-            if len(arduinoData)==7:
+            if len(arduinoData)==9:
                 flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
             
                 kWPump = round((float(arduinoData[6])),2) #Pump Current
@@ -109,8 +109,7 @@ def runFlowSensorPi():
                     time.sleep(1)
             else:
                 runFlowSensorPi()
-                print("rerun FlowSensorPi, array too short")
-                    
+                print("rerun FlowSensorPi, array too short")          
         else:
             print("Serial = 0")
             time.sleep(.5)
