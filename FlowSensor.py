@@ -21,8 +21,8 @@ pulsesPerLiter = 330 #pulses per liter for flow meter
 conversion = 5.5 #convert pulses per second to L/min
 
 maxFlowRate = 0.0
-kWhPump = 0.0
-kWPump = 0.0
+pumpWh = 0.0
+PumpW = 0.0
 index = 0
 serialData=""
 
@@ -69,15 +69,15 @@ def msgWaterFlow(flowRate):
     client.publish("FlowSensorPi/WaterFlow",messageWF)
 
 #message (waterVolume, maxFlow, kWhPump) all for the last 60 sec
-def msgWaterVolume(pulseCount2, maxFlow, kWhPump):
+def msgWaterVolume(pulseCount2, maxFlow, pumpWh):
     waterVolume = pulseCount2/pulsesPerLiter
     if waterVolume <0:
         waterVolume = 0
-    messageWV = ('"'+","+str(round(waterVolume,2))+","+str(maxFlow)+","+str(round(kWhPump,2))+","+'"')
+    messageWV = ('"'+","+str(round(waterVolume,2))+","+str(maxFlow)+","+str(round(pumpWh,2))+","+'"')
     client.publish("FlowSensorPi/WaterVolume",messageWV)
         
 def runFlowSensorPi():
-    global maxFlowRate,kWhPump
+    global maxFlowRate,pumpWh
     while True:
         if ser.in_waiting>0:
             try:
@@ -90,7 +90,7 @@ def runFlowSensorPi():
             if len(arduinoData)==9:
                 flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
             
-                kWPump = (float(arduinoData[6])) #Pump Current
+                pumpW = (float(arduinoData[6])) #Pump Current
                 cycle = int(arduinoData[3])
                 pulseCount2 = int(arduinoData[5])
                 
@@ -98,13 +98,13 @@ def runFlowSensorPi():
                 
                 if flowRate > maxFlowRate:
                     maxFlowRate = flowRate
-                if kWPump > 1.1:
-                    kWhPump += kWPump/15000 #Conver kW to kWh for 1 second at 240V
+                if pumpWh > 1.1:
+                    pumpWh += pumpWh/15 #Conver W to Wh for 1 second at 240V
                 
                 if cycle == 1:
-                    msgWaterVolume(pulseCount2,maxFlowRate,kWhPump)
+                    msgWaterVolume(pulseCount2,maxFlowRate,pumpWh)
                     maxFlowRate = 0.0
-                    kWhPump = 0.0
+                    pumpWh = 0.0
                     ser.flushInput()
             else:
                 runFlowSensorPi()
