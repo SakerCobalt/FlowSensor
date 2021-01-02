@@ -22,6 +22,7 @@ conversion = 5.5 #convert pulses per second to L/min
 
 maxFlowRate = 0.0
 kWhPump = 0.0
+kWPump = 0.0
 index = 0
 serialData=""
 
@@ -86,7 +87,7 @@ def msgWaterVolume(pulseCount2, maxFlow, kWhPump):
     waterVolume = pulseCount2/pulsesPerLiter
     if waterVolume <0:
         waterVolume = 0
-    messageWV = ('"'+str(round(waterVolume,2))+","+str(round(maxFlow,2))+","+str(round(kWhPump,2))+'"')
+    messageWV = ('"'+str(round(waterVolume,2))+","+str(maxFlow)+","+str(kWhPump)+'"')
     client.publish("FlowSensorPi/WaterVolume",messageWV)
         
 def runFlowSensorPi():
@@ -101,7 +102,8 @@ def runFlowSensorPi():
                 traceback.print_exc()
                 
             flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
-            kWhPump += (float(arduinoData[6])/15) #Pump Current converted to kWh for last sec
+            
+            kWPump = round((float(arduinoData[6])),2) #Pump Current
             cycle = int(arduinoData[3])
             pulseCount2 = int(arduinoData[5])
             
@@ -109,6 +111,8 @@ def runFlowSensorPi():
             
             if flowRate > maxFlowRate:
                 maxFlowRate = flowRate
+            if kWPump > 1.1:
+                kWhPump += kWPump/15 #Conver kW to kWh for 1 second at 240V
             
             if cycle == 1:
                 msgWaterVolume(pulseCount2,maxFlowRate,kWhPump)
