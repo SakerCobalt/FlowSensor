@@ -83,7 +83,7 @@ def msgWaterFlow(flowRate):
 
 #message (waterVolume, maxFlow, kWhPump) all for the last 60 sec
 def msgWaterVolume(pulseCount2, maxFlow, kWhPump):
-    waterVolume = pulseCount2/pulsesperLiter
+    waterVolume = pulseCount2/pulsesPerLiter
     if waterVolume <0:
         waterVolume = 0
     messageWV = ('"'+str(round(waterVolume,2))+","+str(maxFlow)+","+str(kWhPump)+'"')
