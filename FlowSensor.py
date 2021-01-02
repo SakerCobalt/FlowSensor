@@ -101,29 +101,30 @@ def runFlowSensorPi():
                 runFlowSensorPi()
                 traceback.print_exc()
                 
-            if len(arduinoData)<7:
-                    runFlowSensorPi()
-                    print("rerun FlowSensorPi, array too short")
+            if len(arduinoData)=7:
+                flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
+            
+                kWPump = round((float(arduinoData[6])),2) #Pump Current
+                cycle = int(arduinoData[3])
+                pulseCount2 = int(arduinoData[5])
+                
+                msgWaterFlow(flowRate)
+                
+                if flowRate > maxFlowRate:
+                    maxFlowRate = flowRate
+                if kWPump > 1.1:
+                    kWhPump += kWPump/15 #Conver kW to kWh for 1 second at 240V
+                
+                if cycle == 1:
+                    msgWaterVolume(pulseCount2,maxFlowRate,kWhPump)
+                    maxFlowRate = 0.0
+                    kWhPump = 0.0
+                    ser.flushInput()
+                    time.sleep(1)
+            else:
+                runFlowSensorPi()
+                print("rerun FlowSensorPi, array too short")
                     
-            flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
-            
-            kWPump = round((float(arduinoData[6])),2) #Pump Current
-            cycle = int(arduinoData[3])
-            pulseCount2 = int(arduinoData[5])
-            
-            msgWaterFlow(flowRate)
-            
-            if flowRate > maxFlowRate:
-                maxFlowRate = flowRate
-            if kWPump > 1.1:
-                kWhPump += kWPump/15 #Conver kW to kWh for 1 second at 240V
-            
-            if cycle == 1:
-                msgWaterVolume(pulseCount2,maxFlowRate,kWhPump)
-                maxFlowRate = 0.0
-                kWhPump = 0.0
-                ser.flushInput()
-            time.sleep(1)
         else:
             print("Serial = 0")
             time.sleep(1)
