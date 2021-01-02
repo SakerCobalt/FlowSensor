@@ -73,7 +73,7 @@ def msgWaterVolume(pulseCount2, maxFlow, kWhPump):
     waterVolume = pulseCount2/pulsesPerLiter
     if waterVolume <0:
         waterVolume = 0
-    messageWV = ('"'+str(round(waterVolume,2))+","+str(maxFlow)+","+str(kWhPump)+'"')
+    messageWV = ('"'+","+str(round(waterVolume,2))+","+str(maxFlow)+","+str(kWhPump)+","+'"')
     client.publish("FlowSensorPi/WaterVolume",messageWV)
         
 def runFlowSensorPi():
