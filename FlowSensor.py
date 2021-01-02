@@ -50,7 +50,6 @@ def initiateSerial():
         ser.flushInput()
         initiateSerial()
         
-
 def getArduinoData():
     try:
         serialData = ser.readline()
@@ -64,16 +63,6 @@ def getArduinoData():
         getArduinoData()
     #print(array)
     return array
-
-def getCurrentTime():
-    #timeNow = time.localtime()
-    #year = time.localtime().tm_year
-    month = time.localtime().tm_mon
-    day = time.localtime().tm_mday
-    hour = time.localtime().tm_hour
-    minute = time.localtime().tm_min
-    second = time.localtime().tm_sec
-    return month,day,hour,minute,second
 
 #message (flow_rate)
 def msgWaterFlow(flowRate):
@@ -126,8 +115,8 @@ def runFlowSensorPi():
                     
         else:
             print("Serial = 0")
-            time.sleep(1)
-            initiateSerial()
+            time.sleep(.5)
+            getArduinoData()
             
 try:
     initiateSerial()
