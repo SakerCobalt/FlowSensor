@@ -20,7 +20,7 @@ import atexit
 pulsesPerLiter = 330 #pulses per liter for flow meter
 conversion = 5.5 #convert pulses per second to L/min
 
-mmaxFlowRate = 0.0
+maxFlowRate = 0.0
 kWhPump = 0.0
 index = 0
 serialData=""
