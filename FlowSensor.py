@@ -55,7 +55,7 @@ def getArduinoData():
         serialData = ser.readline()
         string = str(serialData)
         array = string.split(",") #split the converted serial data into usable values as string
-        print(array)
+        #print(array)
     except:
         print("Failed to getArduinoData",len(array))
         getArduinoData()
