@@ -1,4 +1,4 @@
-#!/usr/bin python3
+#!/usr/bin/python3
 
 #reading data from Arduino
 #Every 86400 seconds is 1 day.
