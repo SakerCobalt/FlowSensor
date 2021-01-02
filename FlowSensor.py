@@ -86,7 +86,7 @@ def runFlowSensorPi():
             except:
                 runFlowSensorPi()
                 traceback.print_exc()
-                
+            print(len(arduinoData))
             if len(arduinoData)==9:
                 flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
             
@@ -106,14 +106,13 @@ def runFlowSensorPi():
                     maxFlowRate = 0.0
                     kWhPump = 0.0
                     ser.flushInput()
-                    time.sleep(1)
             else:
                 runFlowSensorPi()
-                print("rerun FlowSensorPi, array too short")          
+                print("rerun FlowSensorPi, array too short")
+            time.sleep(1)
         else:
             print("Serial = 0")
-            time.sleep(.5)
-            getArduinoData()
+            time.sleep(1)
             
 try:
     initiateSerial()
