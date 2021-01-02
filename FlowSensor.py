@@ -100,16 +100,17 @@ def runFlowSensorPi():
                 runFlowSensorPi()
                 traceback.print_exc()
                 
-            flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min.
+            flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
+            kWhPump += (float(arduinoData[6])/15) #Pump Current converted to kWh for last sec
+            cycle = int(arduinoData[3])
+            pulseCount2 = int(arduinoData[5])
+            
             msgWaterFlow(flowRate)
             
             if flowRate > maxFlowRate:
                 maxFlowRate = flowRate
-            kWhPump += (float(arduinoData[6])/15) #Pump Current converted to kWh for last sec
-            cycle = int(arduinoData[3])
             
             if cycle == 1:
-                pulseCount2 = int(arduinoData[5])
                 msgWaterVolume(pulseCount2,maxFlowRate,kWhPump)
                 maxFlowRate = 0.0
                 kWhPump = 0.0
