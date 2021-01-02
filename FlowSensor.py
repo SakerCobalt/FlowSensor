@@ -55,9 +55,7 @@ def getArduinoData():
         serialData = ser.readline()
         string = str(serialData)
         array = string.split(",") #split the converted serial data into usable values as string
-        '''if len(array)<7:
-            Print("Array length ",len(array))
-            getArduinoData()'''
+        print(array)
     except:
         print("Failed to getArduinoData",len(array))
         getArduinoData()
@@ -83,7 +81,7 @@ def runFlowSensorPi():
     while True:
         if ser.in_waiting>0:
             try:
-                #print("serial data >0")
+                print("serial data >0")
                 arduinoData = getArduinoData()
             except:
                 runFlowSensorPi()
@@ -138,4 +136,4 @@ except OSError:
     time.sleep(5)
     #restartProgram()
 except:
-    runFlowSensorPi()
+    traceback.print_exc()
