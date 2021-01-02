@@ -57,9 +57,9 @@ def getArduinoData():
         serialData = ser.readline()
         string = str(serialData)
         array = string.split(",") #split the converted serial data into usable values as string
-        if len(array)<7:
+        '''if len(array)<7:
             Print("Array length ",len(array))
-            getArduinoData()
+            getArduinoData()'''
     except:
         print("Failed to getArduinoData",len(array))
         getArduinoData()
@@ -97,6 +97,9 @@ def runFlowSensorPi():
             try:
                 #print("serial data >0")
                 arduinoData = getArduinoData()
+                if len(arduinoData)<7:
+                    runFlowSensorPi()
+                    print("rerun FlowSensorPi, array too short")
             except:
                 runFlowSensorPi()
                 traceback.print_exc()
