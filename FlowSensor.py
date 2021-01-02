@@ -107,12 +107,13 @@ def runFlowSensorPi():
                 maxFlowRate = flowRate
             kWhPump += (float(arduinoData[6])/15) #Pump Current converted to kWh for last sec
             cycle = int(arduinoData[3])
-            ser.flushInput()
+            
             if cycle == 1:
                 pulseCount2 = int(arduinoData[5])
                 msgWaterVolume(pulseCount2,maxFlow,kWhPump)
                 maxFlowRate = 0.0
                 kWhPump = 0.0
+                ser.flushInput()
             time.sleep(1)
         else:
             print("Serial = 0")
