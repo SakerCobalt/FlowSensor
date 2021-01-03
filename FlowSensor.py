@@ -22,7 +22,7 @@ conversion = 5.5 #convert pulses per second to L/min
 
 maxFlowRate = 0.0
 pumpWh = 0.0
-PumpW = 0.0
+pumpI = 0.0
 index = 0
 serialData=""
 
@@ -90,7 +90,7 @@ def runFlowSensorPi():
             if len(arduinoData)==9:
                 flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
             
-                pumpW = (float(arduinoData[6])) #Pump Current
+                pumpI = (float(arduinoData[6])) #Pump Current
                 cycle = int(arduinoData[3])
                 pulseCount2 = int(arduinoData[5])
                 
@@ -98,14 +98,16 @@ def runFlowSensorPi():
                 
                 if flowRate > maxFlowRate:
                     maxFlowRate = flowRate
-                if pumpWh > 1.1:
-                    pumpWh += pumpWh/15 #Conver W to Wh for 1 second at 240V
+                if pumpI > 1.1:
+                    pumpWh += pumpI/15 #Conver W to Wh for 1 second at 240V
                 
                 if cycle == 1:
                     msgWaterVolume(pulseCount2,maxFlowRate,pumpWh)
                     maxFlowRate = 0.0
                     pumpWh = 0.0
+                    pumpI=0.0
                     ser.flushInput()
+                    
             else:
                 runFlowSensorPi()
                 print("rerun FlowSensorPi, array too short")
