@@ -90,7 +90,7 @@ def runFlowSensorPi():
             if len(arduinoData)==9:
                 flowRate = round(float(arduinoData[4])/conversion,2) #Divide by Conversion factor to get L/min
             
-                pumpI = (float(arduinoData[6])) #Pump Current
+                pumpI = (float(arduinoData[6])) #Pump Current, RMS value
                 cycle = int(arduinoData[3])
                 pulseCount2 = int(arduinoData[5])
                 
@@ -98,8 +98,8 @@ def runFlowSensorPi():
                 
                 if flowRate > maxFlowRate:
                     maxFlowRate = flowRate
-                if pumpI > 1.1:
-                    pumpWh += pumpI/15 #Conver W to Wh for 1 second at 240V
+                if pumpI > 1.5:
+                    pumpWh += pumpI/15*.8 #Conver W to Wh for 1 second at 240V, 0.8pf
                 
                 if cycle == 1:
                     msgWaterVolume(pulseCount2,maxFlowRate,pumpWh)
