@@ -99,7 +99,7 @@ def runFlowSensorPi():
                 if flowRate > maxFlowRate:
                     maxFlowRate = flowRate
                 if pumpI > 1.5:
-                    pumpWh += pumpI/15*.8 #Conver W to Wh for 1 second at 240V, 0.8pf
+                    pumpWh = pumpWh + (pumpI/15*.8) #Conver W to Wh for 1 second at 240V, 0.8pf
                 
                 if cycle == 1:
                     msgWaterVolume(pulseCount2,maxFlowRate,pumpWh)
