@@ -91,12 +91,13 @@ def msgWaterFlow(flowRate):
     #print(messageWF)
     client.publish("FlowSensorPi/WaterFlow",messageWF)
 
-#message (waterVolume, maxFlow, kWhPump) all for the last 60 sec
-def msgWaterVolume(pulseCount2, maxFlow, pumpWh):
+#message (waterVolume, maxFlow, kWhPump, arduinoConnected) all for the last 60 sec
+def msgWaterVolume(pulseCount2, maxFlow, pumpWh, arduinoConnected):
     waterVolume = pulseCount2/pulsesPerLiter
     if waterVolume <0:
         waterVolume = 0
-    messageWV = ('"'+","+str(round(waterVolume,2))+","+str(maxFlow)+","+str(round(pumpWh,2))+","+'"')
+    messageWV = ('"'+","+str(round(waterVolume,2))+","+str(maxFlow)+","+str(round(pumpWh,2))+","+str(arduinoConnected)+","+'"')
+    print(messageWV)
     client.publish("FlowSensorPi/WaterVolume",messageWV)
         
 def runFlowSensorPi():
@@ -128,7 +129,7 @@ def runFlowSensorPi():
                     pumpWh = pumpWh + (pumpI/15*.8) #Conver W to Wh for 1 second at 240V, 0.8pf
                 
                 if cycle == 1:
-                    msgWaterVolume(pulseCount2,maxFlowRate,pumpWh)
+                    msgWaterVolume(pulseCount2,maxFlowRate,pumpWh,1)
                     maxFlowRate = 0.0
                     pumpWh = 0.0
                     pumpI=0.0
@@ -143,6 +144,7 @@ def runFlowSensorPi():
             print("No serial data available. % d Second(s)" % i)
             time.sleep(1)
             if i%5 ==0:
+                msgWaterVolume(0,0,0,0)
                 getDataFailure()
             
 try:
