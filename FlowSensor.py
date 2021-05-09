@@ -104,7 +104,8 @@ def runFlowSensorPi():
     i=0
     while True:
         if ser.in_waiting>0:
-            i,failureCount=0
+            i=0
+            failureCount=0
             try:
                 #print("serial data >0")
                 arduinoData = getArduinoData()
