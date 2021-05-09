@@ -16,6 +16,7 @@ import paho.mqtt.client as mqtt
 import traceback
 import sys
 import atexit
+from gpiozero import LED
 
 pulsesPerLiter = 330 #pulses per liter for flow meter
 conversion = 5.5 #convert pulses per second to L/min
@@ -25,6 +26,10 @@ pumpWh = 0.0
 pumpI = 0.0
 index = 0
 serialData=""
+failureCount = 0
+reset = LED(17)
+
+reset.on()
 
 broker_address="192.168.50.201"
 client = mqtt.Client("WaterFlowPi")
@@ -43,13 +48,13 @@ def initiateSerial():
         global ser
         print("Connecting")
         ser = serial.Serial('/dev/ttyS0', 2400, 8, 'N',1,timeout=1)
+        time.sleep(1)
     except:
         #To try to reconnect if the first connection fails
         traceback.print_exc()
         time.sleep(5)
-        ser.flushInput()
-        initiateSerial()
-        
+        getDataFailure()
+               
 def getArduinoData():
     try:
         serialData = ser.readline()
@@ -58,9 +63,27 @@ def getArduinoData():
         #print(array)
     except:
         print("Failed to getArduinoData",len(array))
-        getArduinoData()
+        time.sleep(1)
+        getDataFailure()
     #print(array)
     return array
+
+def getDataFailure():
+    global failureCount
+    failureCount += 1
+    print("Reconnecting to Flow Sensor")
+    time.sleep(3)
+    initiateSerial()
+    if failureCount >=2:
+        print("%d Failure(s) of System.  Restarting flow sensor."% failureCount)
+        resetArduino()
+        initiateSerial()
+
+def resetArduino():
+    print("Reset Initiated, stand by...")
+    reset.off()
+    time.sleep(2)
+    reset.on()
 
 #message (flow_rate)
 def msgWaterFlow(flowRate):
@@ -77,9 +100,11 @@ def msgWaterVolume(pulseCount2, maxFlow, pumpWh):
     client.publish("FlowSensorPi/WaterVolume",messageWV)
         
 def runFlowSensorPi():
-    global maxFlowRate,pumpWh
+    global maxFlowRate,pumpWh, failureCount
+    i=0
     while True:
         if ser.in_waiting>0:
+            i,failureCount=0
             try:
                 #print("serial data >0")
                 arduinoData = getArduinoData()
@@ -113,8 +138,11 @@ def runFlowSensorPi():
                 print("rerun FlowSensorPi, array too short")
             time.sleep(1)
         else:
-            print("Serial = 0")
+            i += 1
+            print("No serial data available. % d Second(s)" % i)
             time.sleep(1)
+            if i%5 ==0:
+                getDataFailure()
             
 try:
     initiateSerial()
