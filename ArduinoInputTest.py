@@ -79,7 +79,7 @@ while True:
 #		on_exit()
 #		time.sleep(10)
 #		initiateSerial()
-        print("Index at ",index)
+        print("Index at {}".format(index))
         led.off()
         time.sleep(1)
         led.on()
