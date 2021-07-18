@@ -15,6 +15,7 @@ import paho.mqtt.client as mqtt
 import traceback
 import sys
 import atexit
+from gpiozero import LED
 
 pulsesPerLiter = 330 #pulses per liter for flow meter
 conversion = 5.5 #convert pulses per second to L/min
@@ -68,14 +69,21 @@ def getArduinoData():
     return array
 
 initiateSerial()
+led = LED(12)
+led.on() #High to keep Arduino from resetting
+
 while True:
 	getArduinoData()
 	index += 1
-#	if index==10:
+	if index==10:
 #		on_exit()
 #		time.sleep(10)
 #		initiateSerial()
-#		index = 0
+        print("Index at ",index)
+        led.off()
+        time.sleep(1)
+        led.on()
+		index = 0
 
 def getCurrentTime():
     #timeNow = time.localtime()
