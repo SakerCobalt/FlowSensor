@@ -27,7 +27,7 @@ pumpI = 0.0
 index = 0
 serialData=""
 failureCount = 0
-reset = LED(17)
+reset = LED(12)
 
 reset.on()
 
@@ -74,7 +74,7 @@ def getDataFailure():
     print("Reconnecting to Flow Sensor")
     time.sleep(3)
     initiateSerial()
-    if failureCount >=2:
+    if failureCount >=3:
         print("%d Failure(s) of System.  Restarting flow sensor."% failureCount)
         resetArduino()
         initiateSerial()
@@ -82,7 +82,7 @@ def getDataFailure():
 def resetArduino():
     print("Reset Initiated, stand by...")
     reset.off()
-    time.sleep(2)
+    time.sleep(1)
     reset.on()
 
 #message (flow_rate)
