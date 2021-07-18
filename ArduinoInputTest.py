@@ -73,17 +73,17 @@ led = LED(12)
 led.on() #High to keep Arduino from resetting
 
 while True:
-	getArduinoData()
-	index += 1
-	if index==10:
-#		on_exit()
-#		time.sleep(10)
-#		initiateSerial()
+    getArduinoData()
+    index += 1
+    if index==10:
+        # on_exit()
+        # time.sleep(10)
+        # initiateSerial()
         print("Index at {}".format(index))
         led.off()
         time.sleep(1)
         led.on()
-		index = 0
+        index = 0
 
 def getCurrentTime():
     #timeNow = time.localtime()
